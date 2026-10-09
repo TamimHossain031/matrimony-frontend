@@ -9,7 +9,7 @@ import React, {
   ReactNode,
 } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { apiClient, getAuthToken, setAuthToken } from '@/lib/api-client';
 import { queryKeys } from '@/lib/query-keys';
 import type { ApiResource } from '@/types/api';
@@ -33,7 +33,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isReady, setIsReady] = useState(false);
   const queryClient = useQueryClient();
   const router = useRouter();
-  const pathname = usePathname();
 
   // Hydrate the token from storage once on mount.
   useEffect(() => {
@@ -79,13 +78,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAuthToken(null);
       setToken(null);
       queryClient.clear();
-      if (!pathname?.startsWith('/login') && !pathname?.startsWith('/register')) {
+      const path = window.location.pathname;
+      if (!path.startsWith('/login') && !path.startsWith('/register')) {
         router.replace('/login');
       }
     };
     window.addEventListener('auth:unauthorized', handler);
     return () => window.removeEventListener('auth:unauthorized', handler);
-  }, [queryClient, router, pathname]);
+  }, [queryClient, router]);
 
   const value: AuthContextValue = {
     user: meQuery.data?.data ?? null,

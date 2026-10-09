@@ -116,6 +116,62 @@ export const dictionary = {
     bdt_currency: "টাকা/মাস",
     not_specified: "নির্দিষ্ট করা হয়নি",
     lang_toggle: "English",
+
+    // Common actions
+    loading: "লোড হচ্ছে…",
+    save: "সংরক্ষণ করুন",
+    saving: "সংরক্ষণ হচ্ছে…",
+    cancel: "বাতিল",
+    edit: "সম্পাদনা",
+    remove: "মুছুন",
+    back: "পিছনে",
+    next: "পরবর্তী",
+    previous: "পূর্ববর্তী",
+    confirm: "নিশ্চিত করুন",
+    close: "বন্ধ",
+    send: "পাঠান",
+    optional: "ঐচ্ছিক",
+    view_profile: "প্রোফাইল দেখুন",
+    search: "খুঁজুন",
+
+    // Dashboard
+    dashboard_greeting: "স্বাগতম",
+    stat_completion: "প্রোফাইল সম্পূর্ণতা",
+    stat_new_interests: "নতুন আগ্রহ",
+    stat_connections: "সংযোগ",
+    stat_shortlist: "পছন্দের তালিকা",
+    stat_viewers: "সাম্প্রতিক দর্শক",
+    complete_profile_cta: "আপনার প্রোফাইল সম্পূর্ণ করুন",
+
+    // Profile / sections
+    me_title: "আমার প্রোফাইল",
+    edit_profile: "প্রোফাইল সম্পাদনা",
+    my_photos: "আমার ছবি",
+    preferences_title: "সঙ্গীর পছন্দ",
+    privacy_title: "গোপনীয়তা ও নিরাপত্তা",
+    managers_title: "অভিভাবক",
+    create_profile_title: "আপনার প্রোফাইল তৈরি করুন",
+
+    // Interests
+    tab_received: "প্রাপ্ত",
+    tab_sent: "প্রেরিত",
+    act_accept: "গ্রহণ করুন",
+    act_decline: "প্রত্যাখ্যান",
+    act_withdraw: "প্রত্যাহার",
+    act_disconnect: "সংযোগ বিচ্ছিন্ন",
+
+    // Safety
+    act_report: "রিপোর্ট করুন",
+    act_block: "ব্লক করুন",
+    act_unblock: "আনব্লক",
+
+    // Auth extra
+    logout: "লগআউট",
+    forgot_password: "পাসওয়ার্ড ভুলে গেছেন?",
+    create_account: "অ্যাকাউন্ট তৈরি করুন",
+    full_name: "পূর্ণ নাম",
+    gender: "লিঙ্গ",
+    date_of_birth: "জন্ম তারিখ",
   },
   en: {
     // Brand
@@ -234,6 +290,62 @@ export const dictionary = {
     bdt_currency: "BDT/mo",
     not_specified: "Not specified",
     lang_toggle: "বাংলা",
+
+    // Common actions
+    loading: "Loading…",
+    save: "Save",
+    saving: "Saving…",
+    cancel: "Cancel",
+    edit: "Edit",
+    remove: "Remove",
+    back: "Back",
+    next: "Next",
+    previous: "Previous",
+    confirm: "Confirm",
+    close: "Close",
+    send: "Send",
+    optional: "optional",
+    view_profile: "View profile",
+    search: "Search",
+
+    // Dashboard
+    dashboard_greeting: "Welcome",
+    stat_completion: "Profile completion",
+    stat_new_interests: "New interests",
+    stat_connections: "Connections",
+    stat_shortlist: "Shortlisted",
+    stat_viewers: "Recent viewers",
+    complete_profile_cta: "Complete your profile",
+
+    // Profile / sections
+    me_title: "My profile",
+    edit_profile: "Edit profile",
+    my_photos: "My photos",
+    preferences_title: "Partner preferences",
+    privacy_title: "Privacy & safety",
+    managers_title: "Guardians",
+    create_profile_title: "Create your profile",
+
+    // Interests
+    tab_received: "Received",
+    tab_sent: "Sent",
+    act_accept: "Accept",
+    act_decline: "Decline",
+    act_withdraw: "Withdraw",
+    act_disconnect: "Disconnect",
+
+    // Safety
+    act_report: "Report",
+    act_block: "Block",
+    act_unblock: "Unblock",
+
+    // Auth extra
+    logout: "Log out",
+    forgot_password: "Forgot password?",
+    create_account: "Create account",
+    full_name: "Full name",
+    gender: "Gender",
+    date_of_birth: "Date of birth",
   }
 };
 

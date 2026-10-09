@@ -1,34 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shondhan Matrimony — Frontend
 
-## Getting Started
+A careful, private matrimony registry for Bangladesh. Next.js 16 (App Router) +
+React 19, TanStack Query, Zod, and a hand-built design system. Bilingual
+(বাংলা / English) throughout.
 
-First, run the development server:
+This app is **wired to the live Laravel backend** — the MSW mock layer has been
+removed. Every screen fires real requests through a single `apiClient`.
+
+## Prerequisites
+
+- The Laravel backend running (default `http://localhost:8000`). It lives in the
+  sibling `../backend` directory. Make sure it is migrated and seeded
+  (`php artisan migrate --seed`) so the lookup tables (districts, religions,
+  professions, education levels) are populated.
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configuration
 
-## Learn More
+`.env.local`:
 
-To learn more about Next.js, take a look at the following resources:
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+NEXT_PUBLIC_APP_NAME="Shondhan Matrimony"
+NEXT_PUBLIC_DEFAULT_LOCALE=bn
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Point `NEXT_PUBLIC_API_URL` at your backend. Auth is a bearer token stored in
+`localStorage` and attached by `src/lib/api-client.ts`; a `401` clears the
+session and redirects to `/login`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture
 
-## Deploy on Vercel
+```
+src/
+├── app/                 routes — (app) group is the authenticated, guarded area
+├── components/
+│   ├── ui/              design system: Button, form controls, Modal, Badge, …
+│   ├── layout/          AppShell, nav, PageHeader, AuthCard
+│   ├── profile/         ProfileCard, MatchBreakdown, PhotoGallery, actions
+│   └── providers/       Query, Auth, Toast, i18n
+├── features/<domain>/   data layer — one folder per domain: hooks + schemas
+│                        (auth, profile, preferences, photos, discovery,
+│                         interests, shortlist, messages, notifications,
+│                         safety, lookups)
+├── lib/                 api-client, query config/keys, i18n, formatters
+└── types/               the API contract (models, api, enums) — mirrors the
+                         Laravel resources exactly
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Rule:** `features/*` owns data fetching (TanStack Query). `components/*`
+receive props and render. The whole app talks to the backend through
+`lib/api-client.ts` — the one file to change if the contract shifts.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Admin screens are intentionally absent: the backend exposes no admin API routes.

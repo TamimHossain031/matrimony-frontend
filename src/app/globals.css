@@ -465,8 +465,12 @@ html[lang='bn'] .brand { font-family: var(--font-bn-head); }
 @media (min-width: 1024px) { .grid-cards { grid-template-columns: 1fr 1fr; } }
 
 /* Discover layout */
+.discover-aside { display: none; }
+.discover-filter-btn { display: inline-flex; }
 @media (min-width: 1024px) {
-  .discover-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  .discover-layout { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+  .discover-aside { display: block; position: sticky; top: 76px; }
+  .discover-filter-btn { display: none; }
 }
 
 /* ---- Chat ---------------------------------------------------------------- */
