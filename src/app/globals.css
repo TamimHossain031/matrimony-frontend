@@ -395,7 +395,7 @@ textarea {
 html[lang='bn'] .brand { font-family: var(--font-bn-head); }
 
 .app-body { flex: 1 1 auto; width: 100%; }
-.app-main { padding: 20px 0 calc(var(--nav-h) + 28px); }
+.app-main { padding-block: 20px calc(var(--nav-h) + 28px); }
 @media (min-width: 1024px) {
   .app-main { padding-bottom: 32px; }
   .with-sidebar { display: grid; grid-template-columns: 232px 1fr; gap: 28px; align-items: start; }
@@ -721,8 +721,8 @@ html[lang='bn'] .brand { font-family: var(--font-bn-head); }
 }
 .lp-nav-link:hover { color: var(--leaf); background: var(--leaf-soft); }
 
-.lp-section { padding: 64px 0; }
-@media (max-width: 640px) { .lp-section { padding: 44px 0; } }
+.lp-section { padding-block: 64px; }
+@media (max-width: 640px) { .lp-section { padding-block: 44px; } }
 .lp-section-head { max-width: 62ch; margin: 0 auto 36px; text-align: center; }
 .lp-section-head .muted { margin: 0; }
 .lp-eyebrow {
