@@ -61,6 +61,39 @@ function profileToInput(p: Profile): ProfileInput {
 
 const STEPS = ['Basics', 'Education & career', 'Family', 'Lifestyle', 'About'];
 
+const parseCsv = (s: string) => s.split(',').map((s) => s.trim()).filter(Boolean);
+
+function useCommaSeparatedList(
+  list: string[] | undefined,
+  onChange: (list: string[]) => void,
+) {
+  const [text, setText] = useState(() => (list ?? []).join(', '));
+  const [lastJoined, setLastJoined] = useState(() => (list ?? []).join(', '));
+
+  const joined = (list ?? []).join(', ');
+
+  // Adjust the displayed text to match the underlying list, but only when the
+  // list changes externally (e.g. initial seed / save). While the user is
+  // typing, the text parses back to the same list, so we leave it untouched —
+  // preserving any trailing comma or spaces they've entered.
+  if (joined !== lastJoined) {
+    setLastJoined(joined);
+    const parsed = parseCsv(text);
+    const current = list ?? [];
+    const same =
+      parsed.length === current.length && parsed.every((v, i) => v === current[i]);
+    if (!same) setText(joined);
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setText(value);
+    onChange(parseCsv(value));
+  };
+
+  return { value: text, onChange: handleChange };
+}
+
 function EditInner() {
   const { t, getText } = useI18n();
   const router = useRouter();
@@ -90,9 +123,11 @@ function EditInner() {
   const professions = useProfessions();
   const education = useEducationLevels();
 
-  // Seed the draft once: from the saved draft, else from the existing profile.
-  useEffect(() => {
-    if (seeded || !ready) return;
+  // Seed the draft once during render: from the saved draft, else from the
+  // existing profile. Adjusting state during render is safe here because it is
+  // gated on `!seeded && ready`, and we flip `seeded` in the same pass, so it
+  // runs exactly once and never loops.
+  if (!seeded && ready) {
     let initial: ProfileInput = {};
     try {
       const saved = localStorage.getItem(storageKey);
@@ -109,7 +144,7 @@ function EditInner() {
     }
     setDraft(initial);
     setSeeded(true);
-  }, [seeded, ready, hasProfile, myProfile.data, storageKey, user?.name]);
+  }
 
   // Persist the draft so a refresh never loses data (blueprint §6).
   useEffect(() => {
@@ -124,6 +159,13 @@ function EditInner() {
   const set = (patch: Partial<ProfileInput>) => setDraft((d) => ({ ...d, ...patch }));
   const setLifestyle = (patch: Partial<NonNullable<ProfileInput['lifestyle']>>) =>
     setDraft((d) => ({ ...d, lifestyle: { ...(d.lifestyle ?? {}), ...patch } }));
+
+  const languagesField = useCommaSeparatedList(draft.lifestyle?.languages, (languages) =>
+    setLifestyle({ languages }),
+  );
+  const hobbiesField = useCommaSeparatedList(draft.lifestyle?.hobbies, (hobbies) =>
+    setLifestyle({ hobbies }),
+  );
 
   if (!ready || !seeded) return <CenterSpinner />;
 
@@ -331,16 +373,10 @@ function EditInner() {
               </Field>
             </div>
             <Field label="Languages" hint="Comma separated, e.g. Bangla, English">
-              <Input
-                value={(draft.lifestyle?.languages ?? []).join(', ')}
-                onChange={(e) => setLifestyle({ languages: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })}
-              />
+              <Input {...languagesField} />
             </Field>
             <Field label="Hobbies" hint="Comma separated">
-              <Input
-                value={(draft.lifestyle?.hobbies ?? []).join(', ')}
-                onChange={(e) => setLifestyle({ hobbies: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })}
-              />
+              <Input {...hobbiesField} />
             </Field>
           </>
         )}
