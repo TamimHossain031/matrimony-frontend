@@ -31,8 +31,8 @@ export function Modal({
   if (!open) return null;
 
   return (
-    <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true" data-lenis-prevent>
+      <div className="modal" onClick={(e) => e.stopPropagation()} data-lenis-prevent>
         {title && (
           <div className="modal-head">
             <h3 style={{ margin: 0 }}>{title}</h3>
@@ -45,7 +45,7 @@ export function Modal({
             </button>
           </div>
         )}
-        <div className="modal-body">{children}</div>
+        <div className="modal-body" data-lenis-prevent>{children}</div>
         {footer && <div className="modal-foot">{footer}</div>}
       </div>
     </div>

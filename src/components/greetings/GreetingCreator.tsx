@@ -18,6 +18,7 @@ import { CardThemeRenderer } from './CardThemeRenderer';
 import { EnvelopeExperience } from './EnvelopeExperience';
 import { SharePanel } from './SharePanel';
 import { MuiSelect, MenuItem, ListSubheader } from '@/components/ui/MuiSelect';
+import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import type {
   GreetingTemplate,
   OccasionKey,
@@ -320,76 +321,79 @@ export function GreetingCreator() {
       {/* LEFT: DESIGN & PERSONALIZATION CONTROLS */}
       <div className="creator-controls-column">
         {/* Step 1: Occasion Tabs */}
-        <div className="creator-step-card card card-pad">
-          <div className="section-title">Step 1 — Choose Occasion</div>
-          <div className="occasion-pill-scroller">
-            {OCCASIONS.map((occ) => (
-              <button
-                key={occ.key}
-                type="button"
-                onClick={() => setSelectedOccasion(occ.key)}
-                className={`occasion-pill ${selectedOccasion === occ.key ? 'selected' : ''}`}
-              >
-                <span>{occ.icon}</span>
-                <span>{occ.label}</span>
-              </button>
-            ))}
-          </div>
+        <ScrollReveal animation="fade-up">
+          <div className="creator-step-card card card-pad">
+            <div className="section-title">Step 1 — Choose Occasion</div>
+            <div className="occasion-pill-scroller" data-lenis-prevent>
+              {OCCASIONS.map((occ) => (
+                <button
+                  key={occ.key}
+                  type="button"
+                  onClick={() => setSelectedOccasion(occ.key)}
+                  className={`occasion-pill ${selectedOccasion === occ.key ? 'selected' : ''}`}
+                >
+                  <span>{occ.icon}</span>
+                  <span>{occ.label}</span>
+                </button>
+              ))}
+            </div>
 
-          {/* Template Gallery */}
-          <div className="section-title mt-4">Select Card Design</div>
-          {isLoadingTemplates ? (
-            <div className="state">
-              <div className="spinner" />
-              <p className="small muted">Loading templates...</p>
-            </div>
-          ) : (
-            <div className="template-thumbnails-grid">
-              {templates.map((tpl) => {
-                const isSelected = activeTemplate?.id === tpl.id;
-                const cfg = tpl.design_config;
-                return (
-                  <button
-                    key={tpl.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedTemplateId(tpl.id);
-                      setCustomFontFamily(null);
-                      setCustomParticleType(null);
-                    }}
-                    className={`template-thumb-card ${isSelected ? 'active' : ''}`}
-                    style={{
-                      borderColor: isSelected ? cfg.primaryColor : 'var(--rule)',
-                      boxShadow: isSelected ? `0 0 0 2px ${cfg.primaryColor}` : undefined,
-                    }}
-                  >
-                    <div
-                      className="thumb-color-preview"
-                      style={{ background: cfg.bgGradient }}
+            {/* Template Gallery */}
+            <div className="section-title mt-4">Select Card Design</div>
+            {isLoadingTemplates ? (
+              <div className="state">
+                <div className="spinner" />
+                <p className="small muted">Loading templates...</p>
+              </div>
+            ) : (
+              <div className="template-thumbnails-grid">
+                {templates.map((tpl) => {
+                  const isSelected = activeTemplate?.id === tpl.id;
+                  const cfg = tpl.design_config;
+                  return (
+                    <button
+                      key={tpl.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedTemplateId(tpl.id);
+                        setCustomFontFamily(null);
+                        setCustomParticleType(null);
+                      }}
+                      className={`template-thumb-card ${isSelected ? 'active' : ''}`}
+                      style={{
+                        borderColor: isSelected ? cfg.primaryColor : 'var(--rule)',
+                        boxShadow: isSelected ? `0 0 0 2px ${cfg.primaryColor}` : undefined,
+                      }}
                     >
-                      <span className="thumb-badge">{cfg.badge.split(' ')[0]}</span>
-                    </div>
-                    <div className="thumb-meta">
-                      <div className="thumb-name">{tpl.name}</div>
-                      <div className="thumb-desc">{tpl.description}</div>
-                    </div>
-                    {isSelected && (
                       <div
-                        className="thumb-check-icon"
-                        style={{ backgroundColor: cfg.primaryColor }}
+                        className="thumb-color-preview"
+                        style={{ background: cfg.bgGradient }}
                       >
-                        <CheckCircle size={14} color="#ffffff" />
+                        <span className="thumb-badge">{cfg.badge.split(' ')[0]}</span>
                       </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                      <div className="thumb-meta">
+                        <div className="thumb-name">{tpl.name}</div>
+                        <div className="thumb-desc">{tpl.description}</div>
+                      </div>
+                      {isSelected && (
+                        <div
+                          className="thumb-check-icon"
+                          style={{ backgroundColor: cfg.primaryColor }}
+                        >
+                          <CheckCircle size={14} color="#ffffff" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </ScrollReveal>
 
         {/* Step 2: Personalization Details */}
-        <div className="creator-step-card card card-pad mt-4">
+        <ScrollReveal animation="fade-up" delay={100}>
+          <div className="creator-step-card card card-pad mt-4">
           <div className="section-title">Step 2 — Personalize Your Greeting</div>
 
           <form onSubmit={handleSubmit}>
@@ -441,6 +445,7 @@ export function GreetingCreator() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="textarea"
+                data-lenis-prevent
               />
             </div>
 
@@ -450,7 +455,7 @@ export function GreetingCreator() {
                 <Wand2 size={13} className="txt-marigold" />
                 <span>1-Click Message Prompts:</span>
               </div>
-              <div className="inspiration-chips">
+              <div className="inspiration-chips" data-lenis-prevent>
                 {currentOccasionInspirations.map((txt, idx) => (
                   <button
                     key={idx}
@@ -498,7 +503,7 @@ export function GreetingCreator() {
               </div>
 
               {/* Visual Font Style Preview Cards */}
-              <div className="font-style-pill-grid">
+              <div className="font-style-pill-grid" data-lenis-prevent>
                 {FONT_STYLE_OPTIONS.map((opt) => {
                   const isSelected = fontFamily === opt.id;
                   const primaryCol = activeTemplate?.design_config.primaryColor || 'var(--leaf)';
@@ -632,7 +637,8 @@ export function GreetingCreator() {
             </p>
           </form>
         </div>
-      </div>
+      </ScrollReveal>
+    </div>
 
       {/* RIGHT: LIVE INTERACTIVE PREVIEW */}
       <div className="creator-preview-column">

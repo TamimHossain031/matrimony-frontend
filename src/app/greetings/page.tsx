@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Sparkles, Heart, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useGreetingTemplates } from '@/features/greetings/hooks';
+import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import type { OccasionKey } from '@/types/greetings';
 
 const OCCASIONS: { key: OccasionKey; label: string; icon: string }[] = [
@@ -46,44 +47,50 @@ export default function GreetingsGalleryPage() {
 
       <main className="container" style={{ paddingBlock: '36px 64px' }}>
         {/* Hero Banner */}
-        <div className="greetings-hub-hero">
-          <span className="lp-eyebrow mb-2">
-            <Sparkles size={14} /> Luxury Digital Greetings
-          </span>
-          <h1>Celebrate Life&apos;s Most Beautiful Moments</h1>
-          <p className="muted" style={{ maxWidth: '60ch', margin: '0 auto 24px' }}>
-            Choose an artisanal greeting design, personalize with heartfelt words, and share one
-            enchanted link with anyone in the world.
-          </p>
+        <ScrollReveal animation="fade-up">
+          <div className="greetings-hub-hero">
+            <span className="lp-eyebrow mb-2">
+              <Sparkles size={14} className="animate-badge-shimmer" /> Luxury Digital Greetings
+            </span>
+            <h1>Celebrate Life&apos;s Most Beautiful Moments</h1>
+            <p className="muted" style={{ maxWidth: '60ch', margin: '0 auto 24px' }}>
+              Choose an artisanal greeting design, personalize with heartfelt words, and share one
+              enchanted link with anyone in the world.
+            </p>
 
-          <Link href="/greetings/create" className="btn btn-primary btn-lg">
-            <Sparkles size={18} /> Start Creating Your Card <ArrowRight size={18} />
-          </Link>
-        </div>
+            <Link href="/greetings/create" className="btn btn-primary btn-lg">
+              <Sparkles size={18} /> Start Creating Your Card <ArrowRight size={18} />
+            </Link>
+          </div>
+        </ScrollReveal>
 
         {/* Occasion Filter Scroller */}
-        <div className="occasion-filter-bar mt-6">
-          <div className="occasion-pill-scroller">
-            {OCCASIONS.map((occ) => (
-              <button
-                key={occ.key}
-                type="button"
-                onClick={() => setSelectedOccasion(occ.key)}
-                className={`occasion-pill ${selectedOccasion === occ.key ? 'selected' : ''}`}
-              >
-                <span>{occ.icon}</span>
-                <span>{occ.label}</span>
-              </button>
-            ))}
+        <ScrollReveal animation="fade-up" delay={80}>
+          <div className="occasion-filter-bar mt-6">
+            <div className="occasion-pill-scroller" data-lenis-prevent>
+              {OCCASIONS.map((occ) => (
+                <button
+                  key={occ.key}
+                  type="button"
+                  onClick={() => setSelectedOccasion(occ.key)}
+                  className={`occasion-pill ${selectedOccasion === occ.key ? 'selected' : ''}`}
+                >
+                  <span>{occ.icon}</span>
+                  <span>{occ.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Template Showcase Grid */}
         <div className="mt-6">
-          <div className="row between mb-4">
-            <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Available Designs</h2>
-            <span className="small faint">{templates.length} templates ready</span>
-          </div>
+          <ScrollReveal animation="fade-up" delay={120}>
+            <div className="row between mb-4">
+              <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Available Designs</h2>
+              <span className="small faint">{templates.length} templates ready</span>
+            </div>
+          </ScrollReveal>
 
           {isLoading ? (
             <div className="state">
@@ -92,10 +99,15 @@ export default function GreetingsGalleryPage() {
             </div>
           ) : (
             <div className="greetings-gallery-grid">
-              {templates.map((tpl) => {
+              {templates.map((tpl, index) => {
                 const cfg = tpl.design_config;
                 return (
-                  <div key={tpl.id} className="gallery-card-item card">
+                  <ScrollReveal
+                    key={tpl.id}
+                    animation="fade-up"
+                    delay={Math.min(index * 60, 480)}
+                    className="gallery-card-item card"
+                  >
                     <div
                       className="gallery-card-cover"
                       style={{ background: cfg.bgGradient }}
@@ -144,7 +156,7 @@ export default function GreetingsGalleryPage() {
                         Personalize This Design
                       </Link>
                     </div>
-                  </div>
+                  </ScrollReveal>
                 );
               })}
             </div>

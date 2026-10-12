@@ -20,6 +20,7 @@ import { useI18n } from '@/lib/i18n';
 import { useDashboard } from '@/features/profile/hooks';
 import { Avatar } from '@/components/ui/Avatar';
 import { CenterSpinner } from '@/components/ui/feedback';
+import { Logo } from '@/assets/logo';
 import type { TranslationKey } from '@/lib/i18n/dictionary';
 
 interface NavItem {
@@ -149,7 +150,7 @@ function ShellFrame({
       <header className="topbar">
         <div className="container row between" style={{ width: '100%' }}>
           <Link href="/dashboard" className="brand">
-            {t('brand_name', 'Shondhan')}
+            <Logo size={28} /> {t('brand_name', 'Shondhan')}
           </Link>
           {topbarRight}
         </div>

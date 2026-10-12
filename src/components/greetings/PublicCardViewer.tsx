@@ -20,6 +20,7 @@ import {
 } from '@/features/greetings/hooks';
 import { playReactionSound } from '@/lib/greetings/audio';
 import { MuiSelect, MenuItem } from '@/components/ui/MuiSelect';
+import { Logo } from '@/assets/logo';
 import type { GreetingCard } from '@/types/greetings';
 
 interface PublicCardViewerProps {
@@ -119,7 +120,7 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
       {/* Top Navbar */}
       <header className="viewer-top-navbar">
         <Link href="/" className="brand">
-          <Heart size={18} fill="currentColor" strokeWidth={0} />
+          <Logo size={24} />
           Shondhan
         </Link>
 

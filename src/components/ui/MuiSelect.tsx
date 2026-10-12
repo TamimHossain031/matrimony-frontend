@@ -72,6 +72,7 @@ const defaultMenuPaperSx = {
   backgroundColor: 'var(--paper-raised, #ffffff)',
   fontFamily: 'inherit',
   maxHeight: 340,
+  overscrollBehavior: 'contain',
   '& .MuiMenuItem-root': {
     fontSize: '0.88rem',
     color: 'var(--ink, #1c2321)',
@@ -171,9 +172,16 @@ export const MuiSelect = React.forwardRef<HTMLDivElement, MuiSelectProps>(
             ...sx,
           }}
           MenuProps={{
+            disableScrollLock: true,
             slotProps: {
               paper: {
                 sx: defaultMenuPaperSx,
+                ...({ 'data-lenis-prevent': 'true' } as object),
+                ...(MenuProps?.slotProps?.paper as object),
+              },
+              root: {
+                ...({ 'data-lenis-prevent': 'true' } as object),
+                ...(MenuProps?.slotProps?.root as object),
               },
             },
             ...MenuProps,

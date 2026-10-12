@@ -45,7 +45,7 @@ Input.displayName = 'Input';
 type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & { invalid?: boolean };
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ invalid, className = '', ...rest }, ref) => (
-    <textarea ref={ref} className={`textarea ${invalid ? 'error' : ''} ${className}`} {...rest} />
+    <textarea ref={ref} className={`textarea ${invalid ? 'error' : ''} ${className}`} data-lenis-prevent {...rest} />
   ),
 );
 Textarea.displayName = 'Textarea';

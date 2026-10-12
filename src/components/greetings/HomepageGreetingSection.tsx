@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Sparkles, Heart, ArrowRight, Share2, Shield, Globe } from 'lucide-react';
 import { useGreetingTemplates } from '@/features/greetings/hooks';
+import { ScrollReveal } from '@/components/ui/ScrollReveal';
 
 const OCCASION_TILES = [
   { key: 'wedding', title: 'Wedding & Nikkah', icon: '💍', count: '4 luxury designs' },
@@ -24,22 +25,24 @@ export function HomepageGreetingSection() {
   return (
     <section className="container lp-section" id="greetings" style={{ paddingTop: 20 }}>
       {/* Section Header */}
-      <div className="lp-section-head">
-        <span className="lp-eyebrow">
-          <Sparkles size={14} /> Global Greeting Cards
-        </span>
-        <h2 className="lp-h2">Make Every Special Moment More Memorable</h2>
-        <p className="muted" style={{ maxWidth: '58ch', margin: '0 auto' }}>
-          Create a personalized, luxury greeting card and share it with someone special worldwide —
-          no email, no app download, and no password required. Instantly shareable via WhatsApp,
-          Messenger, or any link.
-        </p>
-      </div>
+      <ScrollReveal animation="fade-up">
+        <div className="lp-section-head">
+          <span className="lp-eyebrow">
+            <Sparkles size={14} className="animate-badge-shimmer" /> Global Greeting Cards
+          </span>
+          <h2 className="lp-h2">Make Every Special Moment More Memorable</h2>
+          <p className="muted" style={{ maxWidth: '58ch', margin: '0 auto' }}>
+            Create a personalized, luxury greeting card and share it with someone special worldwide —
+            no email, no app download, and no password required. Instantly shareable via WhatsApp,
+            Messenger, or any link.
+          </p>
+        </div>
+      </ScrollReveal>
 
       {/* Main Grid: Occasions + Interactive Featured Showcase */}
       <div className="greeting-home-grid">
         {/* Left: Occasion Cards */}
-        <div className="greeting-home-occasions">
+        <ScrollReveal animation="fade-right" className="greeting-home-occasions">
           <div className="section-title mb-2">Explore Occasions</div>
           <div className="occasion-card-list">
             {OCCASION_TILES.map((tile) => {
@@ -76,10 +79,10 @@ export function HomepageGreetingSection() {
               <span>No spam, no tracking, complete privacy</span>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Right: Live Interactive Card Teaser */}
-        <div className="greeting-home-visual">
+        <ScrollReveal animation="fade-left" delay={150} className="greeting-home-visual">
           <div className="teaser-card-wrapper">
             {previewTemplate ? (
               <div
@@ -142,7 +145,7 @@ export function HomepageGreetingSection() {
               </Link>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

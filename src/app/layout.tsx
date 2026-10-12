@@ -1,5 +1,18 @@
 import type { Metadata } from 'next';
-import { Tiro_Bangla, Hind_Siliguri, Inter } from 'next/font/google';
+import {
+  Tiro_Bangla,
+  Hind_Siliguri,
+  Inter,
+  Alex_Brush,
+  Caveat,
+  Cinzel,
+  Cinzel_Decorative,
+  Cormorant_Garamond,
+  Dancing_Script,
+  Great_Vibes,
+  Montserrat,
+  Playfair_Display,
+} from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/components/providers/Providers';
 
@@ -23,6 +36,71 @@ const inter = Inter({
   display: 'swap',
 });
 
+const alexBrush = Alex_Brush({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-alex-brush',
+  display: 'swap',
+});
+
+const caveat = Caveat({
+  weight: ['500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-caveat',
+  display: 'swap',
+});
+
+const cinzel = Cinzel({
+  weight: ['600', '700', '800'],
+  subsets: ['latin'],
+  variable: '--font-cinzel',
+  display: 'swap',
+});
+
+const cinzelDecorative = Cinzel_Decorative({
+  weight: '700',
+  subsets: ['latin'],
+  variable: '--font-cinzel-decorative',
+  display: 'swap',
+});
+
+const cormorantGaramond = Cormorant_Garamond({
+  weight: ['500', '600', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  variable: '--font-cormorant-garamond',
+  display: 'swap',
+});
+
+const dancingScript = Dancing_Script({
+  weight: ['600', '700'],
+  subsets: ['latin'],
+  variable: '--font-dancing-script',
+  display: 'swap',
+});
+
+const greatVibes = Great_Vibes({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-great-vibes',
+  display: 'swap',
+});
+
+const montserrat = Montserrat({
+  weight: ['500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-montserrat',
+  display: 'swap',
+});
+
+const playfairDisplay = Playfair_Display({
+  weight: ['600', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  variable: '--font-playfair-display',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: 'Shondhan Matrimony',
   description:
@@ -32,15 +110,22 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="bn" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@500;600;700&family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Montserrat:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
-        />
-      </head>
-      <body className={`${tiroBangla.variable} ${hindSiliguri.variable} ${inter.variable}`}>
+      <body
+        className={[
+          tiroBangla.variable,
+          hindSiliguri.variable,
+          inter.variable,
+          alexBrush.variable,
+          caveat.variable,
+          cinzel.variable,
+          cinzelDecorative.variable,
+          cormorantGaramond.variable,
+          dancingScript.variable,
+          greatVibes.variable,
+          montserrat.variable,
+          playfairDisplay.variable,
+        ].join(' ')}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
