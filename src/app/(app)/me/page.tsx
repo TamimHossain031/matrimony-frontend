@@ -9,11 +9,13 @@ import {
   ShieldCheck,
   UserPlus,
   ChevronRight,
+  Camera,
 } from 'lucide-react';
 import { useMyProfile } from '@/features/profile/hooks';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { CompletionProgress } from '@/components/profile/CompletionProgress';
 import { VerificationBadge, Badge } from '@/components/ui/Badge';
+import { Avatar } from '@/components/ui/Avatar';
 import { CenterSpinner, EmptyState } from '@/components/ui/feedback';
 import { ApiError } from '@/lib/api-client';
 import { MARITAL_LABELS, heightWithCm } from '@/lib/format';
@@ -44,6 +46,8 @@ export default function MyProfilePage() {
   const p = query.data!;
   const name = getText(p.full_name_en, p.full_name_bn) || p.public_id;
   const location = [p.upazila && getText(p.upazila.name_en, p.upazila.name_bn), p.district && getText(p.district.name_en, p.district.name_bn)].filter(Boolean).join(', ');
+  const primaryPhoto = p.photos?.find((ph) => ph.is_primary) ?? p.photos?.[0];
+  const photoUrl = p.avatar_url || primaryPhoto?.url;
 
   const links = [
     { href: '/me/edit', icon: <Pencil size={18} />, label: t('edit_profile') },
@@ -57,13 +61,40 @@ export default function MyProfilePage() {
       <PageHeader title={t('me_title')} actions={<Link href="/me/edit" className="btn btn-primary btn-sm"><Pencil size={15} /> {t('edit_profile')}</Link>} />
 
       <div className="card card-pad">
-        <div className="row between gap-3 wrap">
-          <div>
-            <div className="row gap-2 wrap" style={{ alignItems: 'baseline' }}>
-              <h2 style={{ margin: 0 }}>{name}</h2>
-              <span className="faint small">{p.public_id}</span>
+        <div className="row between gap-3 wrap" style={{ alignItems: 'center' }}>
+          <div className="row gap-3 wrap" style={{ alignItems: 'center' }}>
+            <Link
+              href="/me/photos"
+              style={{ position: 'relative', display: 'inline-block', textDecoration: 'none' }}
+              title="Manage profile photos"
+            >
+              <Avatar name={name} src={photoUrl} size={76} />
+              <span
+                style={{
+                  position: 'absolute',
+                  bottom: -2,
+                  right: -2,
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                  background: 'var(--leaf)',
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                }}
+              >
+                <Camera size={12} />
+              </span>
+            </Link>
+            <div>
+              <div className="row gap-2 wrap" style={{ alignItems: 'baseline' }}>
+                <h2 style={{ margin: 0 }}>{name}</h2>
+                <span className="faint small">{p.public_id}</span>
+              </div>
+              {p.headline && <p className="muted" style={{ margin: '4px 0 0' }}>{p.headline}</p>}
             </div>
-            {p.headline && <p className="muted" style={{ margin: '4px 0 0' }}>{p.headline}</p>}
           </div>
           <VerificationBadge level={p.verification_level} showUnverified />
         </div>

@@ -27,6 +27,22 @@ export function useUploadPhoto() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.profile.photos });
       qc.invalidateQueries({ queryKey: queryKeys.profile.me });
+      qc.invalidateQueries({ queryKey: queryKeys.auth.me });
+      qc.invalidateQueries({ queryKey: queryKeys.dashboard });
+    },
+  });
+}
+
+export function useUpdatePhoto() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, visibility, is_primary }: { id: number; visibility?: Visibility; is_primary?: boolean }) =>
+      apiClient.patch<ApiResource<ProfilePhoto>>(`/photos/${id}`, { visibility, is_primary }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.profile.photos });
+      qc.invalidateQueries({ queryKey: queryKeys.profile.me });
+      qc.invalidateQueries({ queryKey: queryKeys.auth.me });
+      qc.invalidateQueries({ queryKey: queryKeys.dashboard });
     },
   });
 }
@@ -36,7 +52,12 @@ export function useSetPrimaryPhoto() {
   return useMutation({
     mutationFn: (photoId: number) =>
       apiClient.patch<{ message: string }>(`/photos/${photoId}/primary`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.profile.photos }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.profile.photos });
+      qc.invalidateQueries({ queryKey: queryKeys.profile.me });
+      qc.invalidateQueries({ queryKey: queryKeys.auth.me });
+      qc.invalidateQueries({ queryKey: queryKeys.dashboard });
+    },
   });
 }
 
@@ -47,6 +68,8 @@ export function useDeletePhoto() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.profile.photos });
       qc.invalidateQueries({ queryKey: queryKeys.profile.me });
+      qc.invalidateQueries({ queryKey: queryKeys.auth.me });
+      qc.invalidateQueries({ queryKey: queryKeys.dashboard });
     },
   });
 }

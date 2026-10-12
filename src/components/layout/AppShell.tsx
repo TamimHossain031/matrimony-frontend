@@ -77,15 +77,18 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Link>
           <div style={{ position: 'relative' }}>
             <button onClick={() => setMenuOpen((v) => !v)} className="btn btn-icon btn-subtle" aria-label="Account">
-              <Avatar name={user?.name} size={30} />
+              <Avatar name={user?.name} src={user?.avatar_url} size={30} />
             </button>
             {menuOpen && (
               <>
                 <div style={{ position: 'fixed', inset: 0, zIndex: 20 }} onClick={() => setMenuOpen(false)} />
-                <div className="card" style={{ position: 'absolute', right: 0, top: 42, minWidth: 190, zIndex: 30, padding: 6 }}>
-                  <div className="card-pad" style={{ padding: '10px 12px' }}>
-                    <div className="strong" style={{ fontSize: '0.9rem' }}>{user?.name}</div>
-                    <div className="tiny faint">{user?.email}</div>
+                <div className="card" style={{ position: 'absolute', right: 0, top: 42, minWidth: 210, zIndex: 30, padding: 6 }}>
+                  <div className="card-pad row gap-2" style={{ padding: '10px 12px', alignItems: 'center' }}>
+                    <Avatar name={user?.name} src={user?.avatar_url} size={36} />
+                    <div style={{ overflow: 'hidden' }}>
+                      <div className="strong" style={{ fontSize: '0.9rem', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{user?.name}</div>
+                      <div className="tiny faint" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{user?.email}</div>
+                    </div>
                   </div>
                   <hr className="hairline" style={{ margin: '4px 0' }} />
                   <Link href="/me" className="nav-link" onClick={() => setMenuOpen(false)}><UserIcon size={16} /> {t('nav_profile')}</Link>

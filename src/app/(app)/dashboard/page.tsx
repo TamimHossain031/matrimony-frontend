@@ -70,7 +70,7 @@ export default function DashboardPage() {
             <div className="dash-hero">
               <div className="row between gap-4 wrap" style={{ position: 'relative', zIndex: 1 }}>
                 <div className="row gap-3 grow" style={{ minWidth: 260 }}>
-                  <Avatar name={user?.name} size={64} />
+                  <Avatar name={user?.name} src={user?.avatar_url} size={64} />
                   <div>
                     <div className="row gap-2 wrap" style={{ alignItems: 'center' }}>
                       <h1 style={{ fontSize: '1.65rem', margin: 0, fontWeight: 750 }}>

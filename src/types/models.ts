@@ -18,6 +18,7 @@ import {
   FamilyType,
   DiscoverySort,
   NotificationType,
+  Visibility,
 } from './enums';
 
 // ---- Lookups (LookupController) -------------------------------------------
@@ -47,6 +48,7 @@ export interface User {
   email_verified: boolean;
   phone_verified: boolean;
   has_profile?: boolean | null;
+  avatar_url?: string | null;
 }
 
 // ---- Photos (ProfilePhotoResource) ----------------------------------------
@@ -55,8 +57,10 @@ export interface ProfilePhoto {
   id: number;
   is_primary: boolean;
   position: number;
+  visibility?: Visibility;
   moderation_status: PhotoModerationStatus | null;
   blurred: boolean;
+  blurred_url?: string | null;
   url: string | null;
 }
 
@@ -172,6 +176,7 @@ export interface Profile {
   managers?: ProfileManager[];
   contact?: { phone?: string; email?: string };
   photos?: ProfilePhoto[];
+  avatar_url?: string | null;
 }
 
 // ---- Partner preferences (PreferenceController::present) -------------------

@@ -8,6 +8,7 @@ import { PhotoGallery } from '@/components/profile/PhotoGallery';
 import { MatchBreakdown } from '@/components/profile/MatchBreakdown';
 import { ProfileActions } from '@/components/profile/ProfileActions';
 import { VerificationBadge, Badge } from '@/components/ui/Badge';
+import { Avatar } from '@/components/ui/Avatar';
 import { CenterSpinner, ErrorState } from '@/components/ui/feedback';
 import {
   MARITAL_LABELS,
@@ -84,15 +85,21 @@ function ProfileHeaderCard({ profile }: { profile: Profile }) {
     .filter(Boolean)
     .join(', ');
 
+  const primaryPhoto = profile.photos?.find((ph) => ph.is_primary) ?? profile.photos?.[0];
+  const photoUrl = profile.avatar_url || (primaryPhoto && !primaryPhoto.blurred && primaryPhoto.url ? primaryPhoto.url : undefined);
+
   return (
     <div className="card card-pad">
-      <div className="row between gap-3 wrap">
-        <div>
-          <div className="row gap-2 wrap" style={{ alignItems: 'baseline' }}>
-            <h1 style={{ margin: 0 }}>{name}</h1>
-            <span className="faint small">{profile.public_id}</span>
+      <div className="row between gap-3 wrap" style={{ alignItems: 'center' }}>
+        <div className="row gap-3 wrap" style={{ alignItems: 'center' }}>
+          <Avatar name={name} src={photoUrl} size={64} />
+          <div>
+            <div className="row gap-2 wrap" style={{ alignItems: 'baseline' }}>
+              <h1 style={{ margin: 0 }}>{name}</h1>
+              <span className="faint small">{profile.public_id}</span>
+            </div>
+            {profile.headline && <p className="muted" style={{ margin: '4px 0 0' }}>{profile.headline}</p>}
           </div>
-          {profile.headline && <p className="muted" style={{ margin: '4px 0 0' }}>{profile.headline}</p>}
         </div>
         <VerificationBadge level={profile.verification_level} showUnverified />
       </div>
