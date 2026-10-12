@@ -100,12 +100,16 @@ function EditInner() {
     } catch {
       /* ignore */
     }
-    if (Object.keys(initial).length === 0 && hasProfile && myProfile.data) {
-      initial = profileToInput(myProfile.data);
+    if (Object.keys(initial).length === 0) {
+      if (hasProfile && myProfile.data) {
+        initial = profileToInput(myProfile.data);
+      } else if (user?.name) {
+        initial = { full_name_en: user.name };
+      }
     }
     setDraft(initial);
     setSeeded(true);
-  }, [seeded, ready, hasProfile, myProfile.data, storageKey]);
+  }, [seeded, ready, hasProfile, myProfile.data, storageKey, user?.name]);
 
   // Persist the draft so a refresh never loses data (blueprint §6).
   useEffect(() => {
@@ -128,7 +132,11 @@ function EditInner() {
 
   const persist = (onDone?: () => void) => {
     // Validate the accumulated draft; the backend re-validates authoritatively.
-    const parsed = profileSchema.safeParse(draft);
+    const payload: ProfileInput = {
+      ...draft,
+      ...(draft.full_name_en ? {} : user?.name ? { full_name_en: user.name } : {}),
+    };
+    const parsed = profileSchema.safeParse(payload);
     if (!parsed.success) {
       setErrors(Object.fromEntries(parsed.error.issues.map((i) => [String(i.path[0]), i.message])));
       toast('Please fix the highlighted fields.', 'error');
@@ -136,7 +144,7 @@ function EditInner() {
     }
     setErrors({});
     const mutation = hasProfile ? update : create;
-    mutation.mutate(draft, {
+    mutation.mutate(payload, {
       onSuccess: () => {
         toast('Saved.', 'success');
         onDone?.();
