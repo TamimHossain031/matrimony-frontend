@@ -50,25 +50,40 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 );
 Textarea.displayName = 'Textarea';
 
-interface Option {
-  value: string | number;
-  label: string;
-}
-type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
+import { MuiSelect, MuiSelectOption } from './MuiSelect';
+
+export type Option = MuiSelectOption;
+
+export interface SelectProps {
+  id?: string;
+  name?: string;
+  value?: string | number | readonly string[];
+  disabled?: boolean;
+  required?: boolean;
   invalid?: boolean;
-  options: Option[];
+  className?: string;
+  options: { value: string | number; label: string; disabled?: boolean }[];
   placeholder?: string;
-};
-export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ invalid, className = '', options, placeholder, ...rest }, ref) => (
-    <select ref={ref} className={`select ${invalid ? 'error' : ''} ${className}`} {...rest}>
-      {placeholder !== undefined && <option value="">{placeholder}</option>}
-      {options.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
+  onChange?: (e: { target: { value: string | number | readonly string[]; name?: string } }) => void;
+  'aria-label'?: string;
+}
+
+export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
+  ({ invalid, className = '', options, placeholder, value, onChange, disabled, id, name, required, ...rest }, ref) => (
+    <MuiSelect
+      ref={ref}
+      id={id}
+      name={name}
+      disabled={disabled}
+      required={required}
+      invalid={invalid}
+      className={className}
+      options={options}
+      placeholder={placeholder}
+      value={value ?? ''}
+      onChange={onChange}
+      {...rest}
+    />
   ),
 );
 Select.displayName = 'Select';

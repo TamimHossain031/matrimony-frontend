@@ -285,6 +285,10 @@ export const dictionary = {
     land_final_sub: "হাজারো যাচাইকৃত সদস্যের সাথে যোগ দিন, মর্যাদার সাথে খুঁজে নিন আজীবনের সঙ্গী।",
     land_footer_tagline: "বিশ্বাস, যাচাই ও পারিবারিক সম্মানে গড়া বৈবাহিক রেজিস্ট্রি।",
     land_footer_rights: "সর্বস্বত্ব সংরক্ষিত।",
+    nav_greetings: "গ্রিটিংস কার্ড",
+    greetings_hub_title: "প্রতিটি বিশেষ মুহূর্ত আরও আনন্দময় করুন",
+    greetings_hub_sub: "একটি মাত্র লিংকে কোনো ইমেইল ছাড়াই সুন্দর গ্রিটিংস কার্ড তৈরি করে প্রিয়জনকে পাঠান।",
+    btn_create_card: "গ্রিটিংস কার্ড তৈরি করুন",
   },
   en: {
     // Brand
@@ -572,6 +576,10 @@ export const dictionary = {
     land_final_sub: "Join thousands of verified members finding meaningful, lifelong partnerships — with dignity.",
     land_footer_tagline: "A matrimony registry built on trust, verification and family respect.",
     land_footer_rights: "All rights reserved.",
+    nav_greetings: "Greeting Cards",
+    greetings_hub_title: "Celebrate Every Special Moment",
+    greetings_hub_sub: "Create and share personalized greeting cards worldwide with one link — no email required.",
+    btn_create_card: "Create a Greeting Card",
   }
 };
 

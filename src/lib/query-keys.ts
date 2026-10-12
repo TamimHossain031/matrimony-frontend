@@ -36,4 +36,9 @@ export const queryKeys = {
     blocks: ['safety', 'blocks'] as const,
     contactBlocks: ['safety', 'contact-blocks'] as const,
   },
+  greetings: {
+    templates: (occasion?: string) => ['greetings', 'templates', occasion ?? 'all'] as const,
+    template: (slug: string) => ['greetings', 'template', slug] as const,
+    card: (publicId: string) => ['greetings', 'card', publicId] as const,
+  },
 };

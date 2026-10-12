@@ -23,6 +23,7 @@ import {
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useI18n } from '@/lib/i18n';
 import { CenterSpinner } from '@/components/ui/feedback';
+import { HomepageGreetingSection } from '@/components/greetings/HomepageGreetingSection';
 
 export default function LandingPage() {
   const { isReady, isAuthenticated } = useAuth();
@@ -50,6 +51,7 @@ export default function LandingPage() {
             <a href="#how" className="lp-nav-link">{t('land_nav_how')}</a>
             <a href="#why" className="lp-nav-link">{t('land_nav_why')}</a>
             <a href="#safety" className="lp-nav-link">{t('land_nav_safety')}</a>
+            <a href="#greetings" className="lp-nav-link">Greeting Cards 💌</a>
           </nav>
 
           <div className="row gap-2">
@@ -135,6 +137,9 @@ export default function LandingPage() {
             <Stat num={t('land_stat_privacy_num')} label={t('land_stat_privacy_label')} />
           </div>
         </section>
+
+        {/* ---- Global Greeting Cards Section ---- */}
+        <HomepageGreetingSection />
 
         {/* ---- How it works ---- */}
         <section id="how" className="container lp-section">
@@ -229,6 +234,7 @@ export default function LandingPage() {
             <a href="#how" className="link">{t('land_nav_how')}</a>
             <a href="#why" className="link">{t('land_nav_why')}</a>
             <a href="#safety" className="link">{t('land_nav_safety')}</a>
+            <Link href="/greetings" className="link">Greeting Cards</Link>
             <Link href="/login" className="link">{t('nav_login')}</Link>
             <Link href="/register" className="link">{t('nav_register')}</Link>
           </div>
