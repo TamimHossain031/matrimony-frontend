@@ -114,7 +114,7 @@ export default function MyProfilePage() {
       <div className="card" style={{ overflow: 'hidden' }}>
         {links.map((l) => (
           <Link key={l.href} href={l.href} className="notif-item" style={{ color: 'inherit', textDecoration: 'none' }}>
-            <span className="state-icon" style={{ width: 36, height: 36 }}>{l.icon}</span>
+            <span className="state-icon" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{l.icon}</span>
             <span className="grow strong small" style={{ alignSelf: 'center' }}>{l.label}</span>
             <ChevronRight size={18} className="faint" style={{ alignSelf: 'center' }} />
           </Link>

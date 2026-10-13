@@ -119,16 +119,16 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
     <div className="public-card-viewer-layout">
       {/* Top Navbar */}
       <header className="viewer-top-navbar">
-        <Link href="/" className="brand">
-          <Logo size={24} />
-          Shondhan
+        <Link href="/" className="brand topbar-brand">
+          <Logo size={100} />
+         
         </Link>
 
         <div className="row gap-2">
           <button
             type="button"
             onClick={handleCopyLink}
-            className="btn btn-ghost btn-sm"
+            className="btn btn-sm"
             title="Copy Card Link"
           >
             {hasCopied ? <Check size={14} className="txt-leaf" /> : <Copy size={14} />}
@@ -138,7 +138,7 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
           <button
             type="button"
             onClick={() => setShowShareModal(true)}
-            className="btn btn-ghost btn-sm"
+            className="btn  btn-sm"
             title="Share Card"
           >
             <Share2 size={14} />
@@ -189,7 +189,7 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
             <button
               type="button"
               onClick={() => setShowShareModal(true)}
-              className="btn btn-ghost"
+              className="btn"
             >
               <Share2 size={16} /> Share Card
             </button>
@@ -218,14 +218,7 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
           </div>
           <div className="row gap-3">
             <Link href="/greetings" className="tiny link">Explore Designs</Link>
-            <button
-              type="button"
-              onClick={() => setShowReportModal(true)}
-              className="tiny link btn-subtle"
-              style={{ padding: 0 }}
-            >
-              <Flag size={12} style={{ marginRight: 4 }} /> Report Card
-            </button>
+           
           </div>
         </div>
       </footer>

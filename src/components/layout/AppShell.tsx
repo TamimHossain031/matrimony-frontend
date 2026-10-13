@@ -149,8 +149,8 @@ function ShellFrame({
     <div className="app-shell">
       <header className="topbar">
         <div className="container row between" style={{ width: '100%' }}>
-          <Link href="/dashboard" className="brand">
-            <Logo size={28} /> {t('brand_name', 'Shondhan')}
+          <Link href="/dashboard" className="brand topbar-brand">
+            <Logo size={100} /> 
           </Link>
           {topbarRight}
         </div>
