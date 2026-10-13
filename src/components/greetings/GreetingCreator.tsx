@@ -14,6 +14,7 @@ import {
   Music,
 } from 'lucide-react';
 import { useGreetingTemplates, useCreateGreetingCard } from '@/features/greetings/hooks';
+import { getTemplateImageUrl } from '@/features/greetings/utils';
 import { CardThemeRenderer } from './CardThemeRenderer';
 import { EnvelopeExperience } from './EnvelopeExperience';
 import { SharePanel } from './SharePanel';
@@ -350,6 +351,7 @@ export function GreetingCreator() {
                 {templates.map((tpl) => {
                   const isSelected = activeTemplate?.id === tpl.id;
                   const cfg = tpl.design_config;
+                  const thumbImg = getTemplateImageUrl(tpl);
                   return (
                     <button
                       key={tpl.id}
@@ -369,7 +371,18 @@ export function GreetingCreator() {
                         className="thumb-color-preview"
                         style={{ background: cfg.bgGradient }}
                       >
-                        <span className="thumb-badge">{cfg.badge.split(' ')[0]}</span>
+                        {thumbImg ? (
+                          <img
+                            src={thumbImg}
+                            alt={tpl.name}
+                            className="thumb-image"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <span className="thumb-badge">{cfg.badge.split(' ')[0]}</span>
+                        )}
                       </div>
                       <div className="thumb-meta">
                         <div className="thumb-name">{tpl.name}</div>

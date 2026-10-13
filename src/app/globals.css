@@ -1551,6 +1551,35 @@ html[lang='bn'] .brand { font-family: var(--font-bn-head); }
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
+  overflow: hidden;
+  position: relative;
+}
+.thumb-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  transition: transform 0.25s ease;
+}
+.template-thumb-card:hover .thumb-image {
+  transform: scale(1.06);
+}
+.card-art-banner {
+  width: 100%;
+  max-width: 320px;
+  margin: 12px auto 8px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1.5px solid;
+  aspect-ratio: 16 / 9;
+  background: rgba(0, 0, 0, 0.03);
+}
+.card-art-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .thumb-badge {
   font-size: 1.4rem;
@@ -1958,6 +1987,26 @@ html[lang='bn'] .brand { font-family: var(--font-bn-head); }
   align-items: center;
   justify-content: center;
   padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.gallery-cover-image-container {
+  width: 90%;
+  height: 90%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gallery-card-item:hover .gallery-cover-image-container {
+  transform: scale(1.04);
+}
+.gallery-cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .gallery-mini-paper {
   width: 82%;

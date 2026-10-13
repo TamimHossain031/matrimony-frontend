@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Heart, Sparkles, Award } from 'lucide-react';
+import { getTemplateImageUrl } from '@/features/greetings/utils';
 import type { GreetingTemplate, ThemeSettings, GreetingFontFamily } from '@/types/greetings';
 
 export function getFontClass(fontFamily?: GreetingFontFamily | string): string {
@@ -69,6 +70,8 @@ export function CardThemeRenderer({
       ? 'font-greeting-cormorant'
       : '';
 
+  const artworkUrl = getTemplateImageUrl(template);
+
   return (
     <div
       className={`greeting-card-frame ${borderStyle} ${isInteractivePreview ? 'interactive-preview' : ''} ${className}`}
@@ -108,6 +111,28 @@ export function CardThemeRenderer({
             {config.badge || '✨ Special Greeting'}
           </span>
         </div>
+
+        {/* Uploaded Card Artwork Banner */}
+        {artworkUrl && (
+          <div
+            className="card-art-banner"
+            style={{
+              borderColor: `${accentColor}66`,
+            }}
+          >
+            <img
+              src={artworkUrl}
+              alt={template.name}
+              className="card-art-image"
+              onError={(e) => {
+                const target = e.target as HTMLElement;
+                if (target.parentElement) {
+                  target.parentElement.style.display = 'none';
+                }
+              }}
+            />
+          </div>
+        )}
 
         {/* Recipient Name Header */}
         <div className="card-recipient-section">

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Sparkles, Heart, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useGreetingTemplates } from '@/features/greetings/hooks';
+import { getTemplateImageUrl } from '@/features/greetings/utils';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import type { OccasionKey } from '@/types/greetings';
 
@@ -101,6 +102,7 @@ export default function GreetingsGalleryPage() {
             <div className="greetings-gallery-grid">
               {templates.map((tpl, index) => {
                 const cfg = tpl.design_config;
+                const coverImg = getTemplateImageUrl(tpl);
                 return (
                   <ScrollReveal
                     key={tpl.id}
@@ -112,31 +114,44 @@ export default function GreetingsGalleryPage() {
                       className="gallery-card-cover"
                       style={{ background: cfg.bgGradient }}
                     >
-                      <div
-                        className="gallery-mini-paper"
-                        style={{
-                          backgroundColor: cfg.cardBg,
-                          borderColor: cfg.accentColor,
-                          color: cfg.textColor,
-                        }}
-                      >
-                        <span className="mini-badge" style={{ color: cfg.primaryColor }}>
-                          {cfg.badge}
-                        </span>
-                        <div
-                          className="mini-title font-greeting-serif"
-                          style={{ color: cfg.primaryColor }}
-                        >
-                          {tpl.name}
+                      {coverImg ? (
+                        <div className="gallery-cover-image-container">
+                          <img
+                            src={coverImg}
+                            alt={tpl.name}
+                            className="gallery-cover-image"
+                            onError={(e) => {
+                              (e.target as HTMLElement).parentElement?.classList.add('hidden');
+                            }}
+                          />
                         </div>
+                      ) : (
                         <div
-                          className="mini-divider"
-                          style={{ backgroundColor: cfg.accentColor }}
-                        />
-                        <p className="mini-sample">
-                          &ldquo;Wishing you joy, grace & love...&rdquo;
-                        </p>
-                      </div>
+                          className="gallery-mini-paper"
+                          style={{
+                            backgroundColor: cfg.cardBg,
+                            borderColor: cfg.accentColor,
+                            color: cfg.textColor,
+                          }}
+                        >
+                          <span className="mini-badge" style={{ color: cfg.primaryColor }}>
+                            {cfg.badge}
+                          </span>
+                          <div
+                            className="mini-title font-greeting-serif"
+                            style={{ color: cfg.primaryColor }}
+                          >
+                            {tpl.name}
+                          </div>
+                          <div
+                            className="mini-divider"
+                            style={{ backgroundColor: cfg.accentColor }}
+                          />
+                          <p className="mini-sample">
+                            &ldquo;Wishing you joy, grace & love...&rdquo;
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="gallery-card-details">

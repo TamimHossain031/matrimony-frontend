@@ -44,6 +44,7 @@ export interface GreetingTemplate {
   occasion: string;
   description: string | null;
   thumbnail_path: string | null;
+  thumbnail_url?: string | null;
   design_config: TemplateDesignConfig;
   sort_order: number;
 }
