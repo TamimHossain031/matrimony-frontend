@@ -60,6 +60,10 @@ export function useRevealSequence({
 }: UseRevealSequenceOptions = {}): RevealController {
   const [stage, setStage] = useState<RevealStage>(initialOpen ? 'done' : 'sealed');
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // Mirror of `stage` for synchronous guards (avoids side effects in updaters,
+  // which React 19 StrictMode would double-invoke).
+  const stageRef = useRef(stage);
+  stageRef.current = stage;
   // Keep the latest callback without restarting the sequence when it changes.
   const onRevealRef = useRef(onReveal);
   onRevealRef.current = onReveal;
@@ -69,49 +73,49 @@ export function useRevealSequence({
     timers.current = [];
   }, []);
 
+  const goTo = useCallback((next: RevealStage) => {
+    stageRef.current = next;
+    setStage(next);
+  }, []);
+
   const runSequence = useCallback(() => {
     if (prefersReducedMotion()) {
-      setStage('done');
+      goTo('done');
       onRevealRef.current?.();
       return;
     }
-    setStage('flap');
+    goTo('flap');
     timers.current.push(
-      setTimeout(() => setStage('rise'), STEP_MS.flap),
-      setTimeout(() => setStage('settle'), STEP_MS.flap + STEP_MS.rise),
+      setTimeout(() => goTo('rise'), STEP_MS.flap),
+      setTimeout(() => goTo('settle'), STEP_MS.flap + STEP_MS.rise),
       setTimeout(() => {
-        setStage('done');
+        goTo('done');
         onRevealRef.current?.();
       }, REVEAL_TOTAL_MS),
     );
-  }, []);
+  }, [goTo]);
 
   const play = useCallback(() => {
-    // Only playable from a sealed, idle envelope.
-    setStage((current) => {
-      if (current !== 'sealed') return current;
-      clearTimers();
-      // Defer the chain so React commits the `flap` stage first.
-      timers.current.push(setTimeout(runSequence, 0));
-      return 'sealed';
-    });
+    if (stageRef.current !== 'sealed') return;
+    clearTimers();
+    runSequence();
   }, [clearTimers, runSequence]);
 
   const reset = useCallback(() => {
     clearTimers();
-    setStage('sealed');
-  }, [clearTimers]);
+    goTo('sealed');
+  }, [clearTimers, goTo]);
 
   const replay = useCallback(() => {
     clearTimers();
-    setStage('sealed');
+    goTo('sealed');
     if (prefersReducedMotion()) {
       runSequence();
       return;
     }
     // Let the envelope visibly fold shut before re-opening.
     timers.current.push(setTimeout(runSequence, 640));
-  }, [clearTimers, runSequence]);
+  }, [clearTimers, goTo, runSequence]);
 
   useEffect(() => clearTimers, [clearTimers]);
 

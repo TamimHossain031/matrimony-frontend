@@ -1263,6 +1263,9 @@ html[lang='bn'] .brand { font-family: var(--font-bn-head); }
   position: relative;
   z-index: 6;
   width: 100%;
+  /* Reserve the final card's footprint so the layout never shifts as the
+     envelope drops away and the card settles (CLS ≈ 0). */
+  min-height: clamp(460px, 64vh, 680px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1722,6 +1725,107 @@ html[lang='bn'] .brand { font-family: var(--font-bn-head); }
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   Continuous Envelope → Card Reveal
+   The envelope and the card share one stage and are stacked as absolute
+   layers so the card can rise out while the envelope drops away — one smooth,
+   GPU-only (transform/opacity) choreography driven by `[data-stage]`.
+   Stages: sealed → flap → rise → settle → done
+   ========================================================================== */
+
+.reveal-envelope-layer,
+.reveal-card-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Envelope sits in front at rest, then eases down and fades out. */
+.reveal-envelope-layer {
+  width: min(480px, 92%);
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+}
+[data-stage='settle'] .reveal-envelope-layer,
+[data-stage='done'] .reveal-envelope-layer {
+  transform: translate(-50%, -50%) translateY(46%) scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+}
+[data-stage='done'] .reveal-envelope-layer {
+  visibility: hidden;
+}
+
+/* Card is tucked inside the envelope (behind it) until it rises to the front. */
+.reveal-card-layer {
+  width: min(540px, 92%);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+}
+[data-stage='rise'] .reveal-card-layer,
+[data-stage='settle'] .reveal-card-layer,
+[data-stage='done'] .reveal-card-layer {
+  z-index: 9;
+}
+
+.reveal-card {
+  width: 100%;
+  transform-origin: center bottom;
+  /* Default = hidden inside the pocket (sealed / flap stages). */
+  transform: translateY(24%) scale(0.6);
+  opacity: 0;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+}
+.reveal-card .card-cover-canvas {
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.6), 0 10px 24px -8px rgba(0, 0, 0, 0.35);
+}
+
+/* rise: card slides up out of the envelope and comes to the front. */
+[data-stage='rise'] .reveal-card {
+  transform: translateY(2%) scale(0.82);
+  opacity: 1;
+}
+
+/* settle / done: card springs to rest at centre. */
+[data-stage='settle'] .reveal-card,
+[data-stage='done'] .reveal-card {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+/* Promote to a compositor layer only while actually moving. */
+[data-stage='flap'] .reveal-card,
+[data-stage='rise'] .reveal-card,
+[data-stage='settle'] .reveal-card,
+[data-stage='flap'] .reveal-envelope-layer,
+[data-stage='rise'] .reveal-envelope-layer,
+[data-stage='settle'] .reveal-envelope-layer {
+  will-change: transform, opacity;
+}
+
+@media (max-width: 480px) {
+  .envelope-center-stage {
+    min-height: clamp(400px, 72vh, 560px);
+  }
+  .reveal-card-layer {
+    width: min(360px, 88%);
+  }
+}
+
+/* Reduced motion: the global rule near-instants all transitions, so the
+   machine's jump straight to `done` simply shows the card with no travel. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-card,
+  .reveal-envelope-layer {
+    will-change: auto;
   }
 }
 
