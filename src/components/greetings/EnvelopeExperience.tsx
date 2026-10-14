@@ -21,6 +21,8 @@ interface EnvelopeExperienceProps {
   message: string;
   themeSettings?: ThemeSettings | null;
   initialOpen?: boolean;
+  /** Auto-run the reveal shortly after mount (e.g. inside the preview modal). */
+  autoplay?: boolean;
   onOpenCard?: () => void;
 }
 
@@ -32,6 +34,7 @@ export function EnvelopeExperience({
   message,
   themeSettings,
   initialOpen = false,
+  autoplay = false,
   onOpenCard,
 }: EnvelopeExperienceProps) {
   const [burstCount, setBurstCount] = useState(initialOpen ? 1 : 0);
@@ -74,6 +77,20 @@ export function EnvelopeExperience({
     playGreetingTheme(soundTheme);
     play();
   };
+
+  // Auto-run the reveal once, a beat after mount, when requested (preview modal).
+  // `play()` self-guards on the sealed stage, so re-renders can't double-fire.
+  useEffect(() => {
+    if (!autoplay || initialOpen) return;
+    const t = setTimeout(() => {
+      playUnsealSound();
+      playGreetingTheme(soundTheme);
+      play();
+    }, 480);
+    return () => clearTimeout(t);
+    // soundTheme is captured intentionally; play is stable from the hook.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoplay, initialOpen]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {

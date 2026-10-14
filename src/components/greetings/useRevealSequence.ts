@@ -61,12 +61,13 @@ export function useRevealSequence({
   const [stage, setStage] = useState<RevealStage>(initialOpen ? 'done' : 'sealed');
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   // Mirror of `stage` for synchronous guards (avoids side effects in updaters,
-  // which React 19 StrictMode would double-invoke).
+  // which React 19 StrictMode would double-invoke). Kept in sync via `goTo`.
   const stageRef = useRef(stage);
-  stageRef.current = stage;
   // Keep the latest callback without restarting the sequence when it changes.
   const onRevealRef = useRef(onReveal);
-  onRevealRef.current = onReveal;
+  useEffect(() => {
+    onRevealRef.current = onReveal;
+  }, [onReveal]);
 
   const clearTimers = useCallback(() => {
     timers.current.forEach(clearTimeout);

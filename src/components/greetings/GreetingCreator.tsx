@@ -12,12 +12,14 @@ import {
   Edit3,
   Layers,
   Music,
+  Maximize2,
 } from 'lucide-react';
 import { useGreetingTemplates, useCreateGreetingCard } from '@/features/greetings/hooks';
 import { getTemplateImageUrl } from '@/features/greetings/utils';
 import { CardCoverCanvas } from './CardCoverCanvas';
 import { CoverTextToolbar } from './CoverTextToolbar';
 import { EnvelopeExperience } from './EnvelopeExperience';
+import { LivePreviewModal } from './LivePreviewModal';
 import { SharePanel } from './SharePanel';
 import { MuiSelect, MenuItem, ListSubheader } from '@/components/ui/MuiSelect';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
@@ -194,6 +196,8 @@ export function GreetingCreator() {
 
   // Preview Mode: 'card' or 'envelope'
   const [previewMode, setPreviewMode] = useState<'card' | 'envelope'>('card');
+  // Full-screen premium live preview modal
+  const [showPreview, setShowPreview] = useState(false);
 
   // Cover-image text overlay: positions/styles + currently selected element
   const [layout, setLayout] = useState<CardLayout>(() => withLayoutDefaults(null));
@@ -697,6 +701,16 @@ export function GreetingCreator() {
             </div>
           </div>
 
+          {activeTemplate && (
+            <button
+              type="button"
+              className="btn btn-primary preview-expand-btn"
+              onClick={() => setShowPreview(true)}
+            >
+              <Maximize2 size={15} /> Open Full Preview
+            </button>
+          )}
+
           {activeTemplate ? (
             previewMode === 'card' ? (
               <>
@@ -743,6 +757,20 @@ export function GreetingCreator() {
           ) : null}
         </div>
       </div>
+
+      {activeTemplate && (
+        <LivePreviewModal
+          open={showPreview}
+          onClose={() => setShowPreview(false)}
+          template={activeTemplate}
+          recipientName={recipientName}
+          senderName={senderName}
+          title={title}
+          message={message}
+          themeSettings={{ fontFamily, particleType, soundTheme, layout }}
+          onCustomize={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        />
+      )}
     </div>
   );
 }
