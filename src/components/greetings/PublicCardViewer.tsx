@@ -34,6 +34,7 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
   const reportMutation = useReportCard();
 
   const [hasCopied, setHasCopied] = useState(false);
+  const [isCardOpen, setIsCardOpen] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportReason, setReportReason] = useState('inappropriate_content');
@@ -98,7 +99,9 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
   };
 
   const handleOpenEnvelope = () => {
-    engagementMutation.mutate({ publicId, eventType: 'create_another_clicked' });
+    // The card has been unsealed — reveal the inline share invitation.
+    // (No engagement event here: opening is not a "create another" action.)
+    setIsCardOpen(true);
   };
 
   const handleReportSubmit = async (e: React.FormEvent) => {
@@ -164,13 +167,39 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
           initialOpen={false}
           onOpenCard={handleOpenEnvelope}
         />
+
+        {/* Inline Share Invitation — the emotional payoff, appears once the card opens */}
+        {isCardOpen && (
+          <section className="share-invite animate-card-appear" aria-live="polite">
+            <div className="share-invite-head">
+              <h2 className="share-invite-title">
+                Did this make you smile? <span>Send it to someone you love</span> 💌
+              </h2>
+              <p className="share-invite-sub">
+                Free · no sign-up · takes 10 seconds
+              </p>
+            </div>
+            <SharePanel
+              variant="inline"
+              shareUrl={shareUrl}
+              recipientName={card.recipient_name}
+              senderName={card.sender_name}
+              onShareClick={(platform) =>
+                engagementMutation.mutate({ publicId, eventType: 'share_clicked', referrerCategory: platform })
+              }
+              onCopyClick={() =>
+                engagementMutation.mutate({ publicId, eventType: 'copy_link' })
+              }
+            />
+          </section>
+        )}
       </main>
 
       {/* Interactive Engagement Bar */}
       <section className="viewer-bottom-bar">
-        <div className="container row between wrap gap-3">
-          {/* Reaction Button with Floating Heart Counter */}
-          <div className="row gap-2">
+        <div className="container viewer-bottom-inner">
+          {/* Reaction + quick share */}
+          <div className="viewer-bottom-actions">
             <button
               type="button"
               onClick={handleReaction}
@@ -189,24 +218,22 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
             <button
               type="button"
               onClick={() => setShowShareModal(true)}
-              className="btn"
+              className="btn btn-share-quick"
             >
-              <Share2 size={16} /> Share Card
+              <Share2 size={16} /> <span className="hide-on-mobile">Share Card</span>
             </button>
           </div>
 
           {/* High-Converting Viral CTA Loop */}
-          <div className="row gap-2">
-            <Link
-              href="/greetings/create"
-              onClick={() => engagementMutation.mutate({ publicId, eventType: 'create_another_clicked' })}
-              className="btn btn-primary btn-viral-cta"
-            >
-              <Sparkles size={16} />
-              <span>Make Someone Smile — Create Your Card</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+          <Link
+            href="/greetings/create"
+            onClick={() => engagementMutation.mutate({ publicId, eventType: 'create_another_clicked' })}
+            className="btn btn-primary btn-viral-cta"
+          >
+            <Sparkles size={16} />
+            <span>Make Someone Smile — Create Your Card</span>
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </section>
 
@@ -228,7 +255,7 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
         <div className="modal-backdrop" onClick={() => setShowShareModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-head">
-              <strong>Share this Greeting Card</strong>
+              <strong>Send it to someone you love 💌</strong>
               <button
                 type="button"
                 onClick={() => setShowShareModal(false)}
@@ -239,8 +266,10 @@ export function PublicCardViewer({ publicId, initialCard }: PublicCardViewerProp
             </div>
             <div className="modal-body">
               <SharePanel
+                variant="modal"
                 shareUrl={shareUrl}
                 recipientName={card.recipient_name}
+                senderName={card.sender_name}
                 onShareClick={(platform) =>
                   engagementMutation.mutate({ publicId, eventType: 'share_clicked', referrerCategory: platform })
                 }

@@ -1,8 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
+
+const SMOOTH_SCROLL_DISABLED_PATHS = ['/greetings/create'];
 
 interface SmoothScrollContextType {
   getLenis: () => Lenis | null;
@@ -18,12 +21,19 @@ export const useSmoothScroll = () => useContext(SmoothScrollContext);
 
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
+  const pathname = usePathname();
+
+  const isDisabled = SMOOTH_SCROLL_DISABLED_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
 
   useEffect(() => {
     // Respect reduced-motion preferences
     if (typeof window === 'undefined') return;
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (mediaQuery.matches) return;
+
+    if (isDisabled) return;
 
     const shouldPreventSmoothScroll = (node: HTMLElement): boolean => {
       if (!node || typeof node.getAttribute !== 'function') return false;
@@ -141,7 +151,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, []);
+  }, [isDisabled]);
 
   const scrollTo = (
     target: string | number | HTMLElement,

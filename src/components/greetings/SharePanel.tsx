@@ -6,7 +6,6 @@ import {
   Check,
   Share2,
   ExternalLink,
-  MessageCircle,
   Send,
   QrCode,
 } from 'lucide-react';
@@ -14,6 +13,9 @@ import {
 interface SharePanelProps {
   shareUrl: string;
   recipientName: string;
+  senderName?: string | null;
+  /** 'modal' = full panel inside the share dialog, 'inline' = compact prompt under the opened card. */
+  variant?: 'modal' | 'inline';
   onShareClick?: (platform: string) => void;
   onCopyClick?: () => void;
   className?: string;
@@ -43,9 +45,19 @@ function LinkedinIcon() {
   );
 }
 
+function WhatsappIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
+  );
+}
+
 export function SharePanel({
   shareUrl,
   recipientName,
+  senderName,
+  variant = 'modal',
   onShareClick,
   onCopyClick,
   className = '',
@@ -53,7 +65,10 @@ export function SharePanel({
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
 
-  const shareText = `I made a special greeting card for you 💌 Open it here:`;
+  const fromLine = senderName ? ` from ${senderName}` : '';
+  const shareText = `${recipientName ? `${recipientName}, a` : 'A'} little something special for you${fromLine} 💌 Tap to open your greeting:`;
+  const canNativeShare =
+    typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
   const handleCopy = async () => {
     try {
@@ -76,7 +91,7 @@ export function SharePanel({
   };
 
   const handleNativeShare = async () => {
-    if (typeof navigator !== 'undefined' && navigator.share) {
+    if (canNativeShare) {
       try {
         await navigator.share({
           title: `Special Greeting for ${recipientName || 'You'}`,
@@ -94,14 +109,9 @@ export function SharePanel({
     }
   };
 
-  const socialLinks = [
-    {
-      name: 'WhatsApp',
-      icon: <MessageCircle size={18} />,
-      color: '#25D366',
-      url: `https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`,
-      platform: 'whatsapp',
-    },
+  const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
+
+  const secondarySocials = [
     {
       name: 'Facebook',
       icon: <FacebookIcon />,
@@ -117,7 +127,7 @@ export function SharePanel({
       platform: 'telegram',
     },
     {
-      name: 'X (Twitter)',
+      name: 'X',
       icon: <XTwitterIcon />,
       color: '#000000',
       url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
@@ -137,88 +147,59 @@ export function SharePanel({
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  // High-contrast clean QR Code SVG URL via QR server standard API or scannable block
   const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shareUrl)}`;
 
   return (
-    <div className={`share-panel-card card card-pad ${className}`}>
-      <div className="share-head">
-        <h3 style={{ margin: 0, fontSize: '1.2rem' }}>🎉 Your Greeting Card is Live!</h3>
-        <p className="muted small" style={{ margin: '4px 0 16px' }}>
-          Anyone with this private link can view the card worldwide. No email or account required.
+    <div className={`share-panel share-panel--${variant} ${className}`}>
+      {variant === 'modal' && (
+        <p className="muted small" style={{ margin: '0 0 16px' }}>
+          Anyone with this private link can open the card. No email or account required.
         </p>
-      </div>
-
-      {/* Copy Link Input Bar */}
-      <div className="share-link-box">
-        <input
-          type="text"
-          readOnly
-          value={shareUrl}
-          className="share-input"
-          onClick={(e) => (e.target as HTMLInputElement).select()}
-        />
-        <button
-          type="button"
-          onClick={handleCopy}
-          className={`btn btn-primary share-copy-btn ${copied ? 'copied' : ''}`}
-        >
-          {copied ? <Check size={16} /> : <Copy size={16} />}
-          <span>{copied ? 'Copied!' : 'Copy Link'}</span>
-        </button>
-      </div>
-
-      {/* Primary Action Buttons */}
-      <div className="share-actions-row">
-        {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
-          <button
-            type="button"
-            onClick={handleNativeShare}
-            className="btn btn-rose btn-block"
-            style={{ flex: 1 }}
-          >
-            <Share2 size={16} /> Share via Phone Menu
-          </button>
-        )}
-
-        <button
-          type="button"
-          onClick={() => setShowQr(!showQr)}
-          className="btn btn-ghost"
-          style={{ flex: 1 }}
-        >
-          <QrCode size={16} /> {showQr ? 'Hide QR' : 'Show QR Code'}
-        </button>
-
-        <a
-          href={shareUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn btn-ghost"
-          style={{ flex: 1 }}
-        >
-          <ExternalLink size={16} /> Open Card
-        </a>
-      </div>
-
-      {/* QR Code Reveal */}
-      {showQr && (
-        <div className="share-qr-section animate-card-appear">
-          <div className="qr-box">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={qrApiUrl} alt="Scan QR Code to open greeting card" width={180} height={180} />
-          </div>
-          <p className="tiny muted text-center mt-2">
-            Scan with any smartphone camera to open the card directly.
-          </p>
-        </div>
       )}
 
-      {/* Quick 1-Click Social Sharing */}
-      <div className="share-social-grid mt-4">
-        <div className="section-title">Instant 1-Click Sharing</div>
-        <div className="row wrap gap-2">
-          {socialLinks.map((s) => (
+      {/* ---- Personal tier: lead with the channels you message close people on ---- */}
+      <div className="share-personal">
+        <button
+          type="button"
+          onClick={() => handleSocialClick('whatsapp', whatsappUrl)}
+          className="share-hero-whatsapp"
+        >
+          <span className="share-hero-ico">
+            <WhatsappIcon />
+          </span>
+          <span className="share-hero-text">
+            <strong>Send on WhatsApp</strong>
+            <small>The quickest way to reach your people</small>
+          </span>
+          <ExternalLink size={16} className="share-hero-arrow" />
+        </button>
+
+        <div className="share-personal-row">
+          {canNativeShare && (
+            <button
+              type="button"
+              onClick={handleNativeShare}
+              className="btn btn-personal"
+            >
+              <Share2 size={16} /> Share
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handleCopy}
+            className={`btn btn-personal ${copied ? 'is-copied' : ''}`}
+          >
+            {copied ? <Check size={16} /> : <Copy size={16} />}
+            <span>{copied ? 'Link copied!' : 'Copy link'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ---- Secondary tier: broadcast / wider sharing, intentionally quieter ---- */}
+      <div className="share-secondary">
+        <div className="share-divider"><span>Or share anywhere</span></div>
+        <div className="row wrap gap-2 share-secondary-pills">
+          {secondarySocials.map((s) => (
             <button
               key={s.name}
               type="button"
@@ -232,7 +213,29 @@ export function SharePanel({
               <span>{s.name}</span>
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => setShowQr(!showQr)}
+            className="social-share-pill"
+          >
+            <span className="social-icon">
+              <QrCode size={18} />
+            </span>
+            <span>{showQr ? 'Hide QR' : 'QR code'}</span>
+          </button>
         </div>
+
+        {showQr && (
+          <div className="share-qr-section animate-card-appear">
+            <div className="qr-box">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={qrApiUrl} alt="Scan QR Code to open greeting card" width={160} height={160} />
+            </div>
+            <p className="tiny muted text-center mt-2">
+              Scan with any phone camera to open the card directly.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

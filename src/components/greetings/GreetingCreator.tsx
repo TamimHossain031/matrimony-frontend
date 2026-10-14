@@ -369,13 +369,15 @@ export function GreetingCreator() {
                     >
                       <div
                         className="thumb-color-preview"
-                        style={{ background: cfg.bgGradient }}
+                    
                       >
                         {thumbImg ? (
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={thumbImg}
                             alt={tpl.name}
                             className="thumb-image"
+                            loading="lazy"
                             onError={(e) => {
                               (e.target as HTMLElement).style.display = 'none';
                             }}
