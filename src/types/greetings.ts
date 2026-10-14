@@ -49,11 +49,44 @@ export interface GreetingTemplate {
   sort_order: number;
 }
 
+/** A single text element placed over the card cover image. */
+export type CoverTextKey = 'recipient' | 'title' | 'message' | 'sender';
+
+export interface TextElementLayout {
+  /** Element center X as a percentage (0–100) of the canvas width. */
+  xPct: number;
+  /** Element center Y as a percentage (0–100) of the canvas height. */
+  yPct: number;
+  /** Text box width as a percentage (0–100) of the canvas width (controls wrapping). */
+  widthPct?: number;
+  /** Font size in container-query width units (cqw) so it scales with the canvas. */
+  fontSizeCqw?: number;
+  align?: 'left' | 'center' | 'right';
+  /** Text color override; defaults to a legible light color over the scrim. */
+  color?: string;
+  /** Per-element font override; falls back to the card font. */
+  fontFamily?: GreetingFontFamily | string;
+  /** User hid this element from the card. */
+  hidden?: boolean;
+}
+
+/** Per-card overlay layout: where each text block sits on the cover image. */
+export interface CardLayout {
+  recipient?: TextElementLayout;
+  title?: TextElementLayout;
+  message?: TextElementLayout;
+  sender?: TextElementLayout;
+  /** Legibility gradient drawn over the image, behind the text. */
+  scrim?: 'none' | 'bottom' | 'top' | 'full';
+}
+
 export interface ThemeSettings {
   fontFamily?: GreetingFontFamily | string;
   particleType?: 'golden_stars' | 'rose_petals' | 'sparkles' | 'confetti' | 'floating_hearts' | 'none';
   soundTheme?: 'celebration' | 'romantic_harp' | 'festive_bells' | 'gentle_piano' | 'none';
   customAccentColor?: string;
+  /** Positions/styles of the text overlaid on the cover image. */
+  layout?: CardLayout;
 }
 
 export interface GreetingCard {

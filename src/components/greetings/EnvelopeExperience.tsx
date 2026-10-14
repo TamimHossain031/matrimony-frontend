@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Sparkles, Volume2, VolumeX, RotateCcw } from 'lucide-react';
-import { CardThemeRenderer } from './CardThemeRenderer';
+import { CardCoverCanvas } from './CardCoverCanvas';
 import { ParticleCanvas, ParticleKind } from './ParticleCanvas';
 import { playUnsealSound, playGreetingTheme, toggleSound, isSoundMuted } from '@/lib/greetings/audio';
 import type { GreetingTemplate, ThemeSettings } from '@/types/greetings';
@@ -253,7 +253,7 @@ export function EnvelopeExperience({
              UNFOLDED / EXPANDED CELEBRATION CARD STATE
              ================================================================ */
           <div className="unfolded-card-container animate-card-appear">
-            <CardThemeRenderer
+            <CardCoverCanvas
               template={template}
               recipientName={recipientName}
               senderName={senderName}

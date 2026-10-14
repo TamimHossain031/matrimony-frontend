@@ -15,17 +15,22 @@ import {
 } from 'lucide-react';
 import { useGreetingTemplates, useCreateGreetingCard } from '@/features/greetings/hooks';
 import { getTemplateImageUrl } from '@/features/greetings/utils';
-import { CardThemeRenderer } from './CardThemeRenderer';
+import { CardCoverCanvas } from './CardCoverCanvas';
+import { CoverTextToolbar } from './CoverTextToolbar';
 import { EnvelopeExperience } from './EnvelopeExperience';
 import { SharePanel } from './SharePanel';
 import { MuiSelect, MenuItem, ListSubheader } from '@/components/ui/MuiSelect';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
+import { DEFAULT_CARD_LAYOUT, withLayoutDefaults } from '@/features/greetings/layout';
 import type {
   GreetingTemplate,
   OccasionKey,
   ThemeSettings,
   CreateGreetingCardResponse,
   GreetingFontFamily,
+  CardLayout,
+  CoverTextKey,
+  TextElementLayout,
 } from '@/types/greetings';
 
 export interface FontStyleOption {
@@ -190,6 +195,17 @@ export function GreetingCreator() {
   // Preview Mode: 'card' or 'envelope'
   const [previewMode, setPreviewMode] = useState<'card' | 'envelope'>('card');
 
+  // Cover-image text overlay: positions/styles + currently selected element
+  const [layout, setLayout] = useState<CardLayout>(() => withLayoutDefaults(null));
+  const [selectedKey, setSelectedKey] = useState<CoverTextKey | null>(null);
+
+  const updateLayoutElement = (key: CoverTextKey, next: TextElementLayout) =>
+    setLayout((prev) => ({ ...prev, [key]: next }));
+  const resetLayoutElement = (key: CoverTextKey) =>
+    setLayout((prev) => ({ ...prev, [key]: { ...DEFAULT_CARD_LAYOUT[key] } }));
+  const setScrim = (scrim: NonNullable<CardLayout['scrim']>) =>
+    setLayout((prev) => ({ ...prev, scrim }));
+
   // Published Result State
   const [publishedResult, setPublishedResult] = useState<CreateGreetingCardResponse | null>(null);
 
@@ -244,6 +260,7 @@ export function GreetingCreator() {
           fontFamily,
           particleType,
           soundTheme,
+          layout,
         },
       });
 
@@ -302,7 +319,7 @@ export function GreetingCreator() {
                 senderName={senderName}
                 title={title}
                 message={message}
-                themeSettings={{ fontFamily, particleType, soundTheme }}
+                themeSettings={{ fontFamily, particleType, soundTheme, layout }}
                 initialOpen={true}
               />
             </div>
@@ -681,23 +698,35 @@ export function GreetingCreator() {
           </div>
 
           {activeTemplate ? (
-            <div className="preview-viewport-card">
-              {previewMode === 'card' ? (
-                <div
-                  className="preview-card-wrap"
-                  style={{ background: activeTemplate.design_config.bgGradient }}
-                >
-                  <CardThemeRenderer
+            previewMode === 'card' ? (
+              <>
+                <div className="preview-viewport-card">
+                  <CardCoverCanvas
                     template={activeTemplate}
                     recipientName={recipientName}
                     senderName={senderName}
                     title={title}
                     message={message}
                     themeSettings={{ fontFamily, particleType, soundTheme }}
-                    isInteractivePreview={true}
+                    layout={layout}
+                    editable={true}
+                    selectedKey={selectedKey}
+                    onSelect={setSelectedKey}
+                    onLayoutChange={updateLayoutElement}
                   />
                 </div>
-              ) : (
+                <CoverTextToolbar
+                  layout={withLayoutDefaults(layout)}
+                  selectedKey={selectedKey}
+                  fontOptions={FONT_STYLE_OPTIONS.map((f) => ({ id: f.id, name: f.name }))}
+                  onSelectKey={setSelectedKey}
+                  onChange={updateLayoutElement}
+                  onResetElement={resetLayoutElement}
+                  onScrimChange={setScrim}
+                />
+              </>
+            ) : (
+              <div className="preview-viewport-card">
                 <div style={{ minHeight: 460 }}>
                   <EnvelopeExperience
                     template={activeTemplate}
@@ -705,12 +734,12 @@ export function GreetingCreator() {
                     senderName={senderName}
                     title={title}
                     message={message}
-                    themeSettings={{ fontFamily, particleType, soundTheme }}
+                    themeSettings={{ fontFamily, particleType, soundTheme, layout }}
                     initialOpen={false}
                   />
                 </div>
-              )}
-            </div>
+              </div>
+            )
           ) : null}
         </div>
       </div>
